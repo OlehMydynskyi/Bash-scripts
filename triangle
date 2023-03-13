@@ -1,0 +1,11 @@
+#!/bin/bash
+#print triangles of stars
+height=$1
+echo -e "Triangle whith height ${height:="5"}\n"
+for ((i = 0; i < $height; i++)); do
+	for ((j = 0; j <= i; j++)); do
+		echo -n '*'
+	done
+	echo ''
+done
+echo ''

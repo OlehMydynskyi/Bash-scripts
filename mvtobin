@@ -1,0 +1,4 @@
+#!/bin/bash
+#Move scripts to ~/bin
+
+cp $(ls | grep -v '^mvtobin$') ~/bin
