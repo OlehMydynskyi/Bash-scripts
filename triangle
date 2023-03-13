@@ -1,11 +1,73 @@
 #!/bin/bash
-#print triangles of stars
-height=$1
-echo -e "Triangle whith height ${height:="5"}\n"
-for ((i = 0; i < $height; i++)); do
-	for ((j = 0; j <= i; j++)); do
-		echo -n '*'
+#Print triangle of stars
+
+#Global variables
+PROGNAME=$(basename $0)
+ERRORTEXT=
+
+#Functions
+errorExit () {
+	echo  "$PROGNAME: $ERRORTEXT" >&2
+    exit 1
+}
+
+printTriangle () {
+	case $ttype in
+		1) printRightTriangle
+		   ;;
+		2) printIsoscellesTriangle 
+		   ;;
+	esac
+}
+
+printRightTriangle () {
+	for ((i = 0; i < $length; i++)); do
+		for ((j = 0; j <= i; j++)); do
+			echo -n $symbol
+		done
+		echo ''
 	done
-	echo ''
+}
+
+printIsoscellesTriangle () {
+	for ((i = 0; i < $length; i++)); do
+		count=$(($length - $i - 1))
+		for ((j = $count; j >= 0; j--)); do
+			echo -n " "
+		done	
+		for ((k = 0; k < $(($length - $count + $i)); k++)); do
+			echo -n $symbol
+		done
+		echo ''
+	done
+}
+
+#Main variables
+length=5
+ttype=1
+symbol="*"
+
+#Main
+while [[ -n $1 ]]; do
+	case $1 in
+		-l|--length) shift
+					 length=$1
+					 ;;
+		-t|--type)   shift
+					 ttype=$1
+					 if [[ !( $ttype =~ [1-2] ) ]]; then ERRORTEXT="Type must be 1 or 2";  errorExit; fi
+					 ;;
+		-s|--symbol) shift
+					 symbol=$1
+					 if [[ ${#symbol} != 1 ]]; then ERRORTEXT="String must consist of single synbol"; errorExit; fi
+					 ;;
+		*)			 ERRORTEXT="Invalid parameter: $1";
+					 errorExit
+					 ;;
+	esac
+	shift
 done
+
+echo -e "Triangle whith length $length:\n"
+printTriangle
 echo ''
